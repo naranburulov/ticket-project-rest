@@ -1,8 +1,14 @@
 package com.cydeo.entity;
 
-import java.time.LocalDate;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class BaseEntity {
     private Long id;
     private LocalDateTime insertDateTime;
