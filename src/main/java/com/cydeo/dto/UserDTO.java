@@ -9,11 +9,11 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserDto {
+public class UserDTO {
     private String firstName;
     private String lastName;
     private String userName;
-    private String password;
+    private String passWord;
     private boolean enabled;                    //for security
     private String phone;
     private Role role;
