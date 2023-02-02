@@ -9,5 +9,5 @@ public interface CrudService<T, ID>{
     T findById(ID id);
     List<T> findAll();
     T save(UserDTO user);
-    T deleteById(ID username);
+    void deleteById(ID username);
 }
