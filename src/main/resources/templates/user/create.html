@@ -53,7 +53,7 @@
                                             <div class="col-sm-6 col-md-6">
                                                 <div class="form-group">
                                                     <label for="emailaddress" class="col-form-label">Email Address</label>
-                                                    <input id="emailaddress" type="text" placeholder="email address" th:field="*{userName}" class="form-control">>
+                                                    <input id="emailaddress" type="text" placeholder="email address" th:field="*{userName}" class="form-control">
                                                 </div>
                                             </div>
 
@@ -101,7 +101,6 @@
                                                     <select th:field="*{role}" name="role" class="custom-select">
                                                         <option th:value="''" th:text="Select"></option>
                                                         <option th:each="role : ${roles}" th:value="${role.getId()}" th:text="${role.getDescription()}"></option>
-<!--                                                        <option th:each="role : ${roles}"></option>-->
                                                     </select>
                                                 </div>
                                             </div>
@@ -155,12 +154,12 @@
 
                                             <tbody>
 
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                            <tr th:each="user: ${users}">
+                                                <td th:text="${user.getFirstName() + ' ' + user.getLastName()}"></td>
+                                                <td th:text="${user.getUserName()}"></td>
+                                                <td th:text="${user.getGender()}"></td>
+                                                <td th:text="${user.getPhone()}"></td>
+                                                <td th:text="${user.getRole().getDescription()}"></td>
                                                 <td class="actions">
                                                     <a href="#"><button type="button" class="btn btn-warning btn-sm">Update</button></a>
                                                     <a href="#" class="delete-row"><button type="button" class="btn btn-secondary btn-sm">Delete</button></a>
