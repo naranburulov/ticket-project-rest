@@ -50,7 +50,7 @@ public class ProjectController {
     @PostMapping("/update")
     public String updateProject(@ModelAttribute("project") ProjectDTO project){
         projectService.update(project);
-        return "redirect:project/create";
+        return "redirect:/project/create";
     }
 
     @GetMapping("/delete/{projectCode}")
