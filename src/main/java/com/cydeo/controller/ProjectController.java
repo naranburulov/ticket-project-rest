@@ -22,7 +22,7 @@ public class ProjectController {
     @GetMapping("/create")
     public String createProject(Model model, @ModelAttribute("username") String username){
         model.addAttribute("project", new ProjectDTO());
-        model.addAttribute("managers", userService.findAll());
+        model.addAttribute("managers", userService.findManagers());
         model.addAttribute("projects", projectService.findAll());
         return "project/create";
     }
@@ -33,8 +33,11 @@ public class ProjectController {
         return "redirect:/project/create";
     }
 
-
-
+    @GetMapping("/complete/{projectCode}")
+    public String completeProject(@PathVariable("projectCode") String projectCode){
+        projectService.complete(projectService.findById(projectCode));
+        return "redirect:/project/create";
+    }
 
     @GetMapping("/delete/{projectCode}")
     public String deleteProject(@PathVariable("projectCode") String projectCode){
