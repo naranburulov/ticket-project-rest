@@ -9,9 +9,10 @@ import java.util.List;
 
 @Service
 public class ProjectServiceImpl extends AbstractMapService<ProjectDTO,String> implements ProjectService {
+
     @Override
-    public ProjectDTO findById(String projectId) {
-        return null;
+    public ProjectDTO findById(String projectCode) {
+        return super.findById(projectCode);
     }
 
     @Override
