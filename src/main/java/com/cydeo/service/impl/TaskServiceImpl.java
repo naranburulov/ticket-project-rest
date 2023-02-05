@@ -40,12 +40,14 @@ public class TaskServiceImpl extends AbstractMapService<TaskDTO, Long> implement
 
     @Override
     public void update(TaskDTO task) {
-        if (task.getTaskStatus()==null){
-            task.setTaskStatus(Status.OPEN);
-        }
-        if (task.getAssignedDate()==null){
-            task.setAssignedDate(LocalDate.now());
-        }
+
+        TaskDTO foundTask = findById(task.getId());
+        //this method is used in TaskController,
+        // and it grabs the certain task from the UI form (see Task List on Task Create page)
+        // therefore, id, status, and assigned date - all already exist for that exact task
+
+        task.setTaskStatus(foundTask.getTaskStatus());
+        task.setAssignedDate(foundTask.getAssignedDate());
 
         super.update(task.getId(), task);
     }
@@ -59,6 +61,20 @@ public class TaskServiceImpl extends AbstractMapService<TaskDTO, Long> implement
     public List<TaskDTO> findTasksByManager(UserDTO manager) {
         return super.findAll().stream()
                 .filter(taskDTO -> taskDTO.getProject().getAssignedManager().equals(manager))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TaskDTO> findAllTasksByStatusIsNot(Status completeStatus) {
+        return findAll().stream()
+                .filter(task -> !task.getTaskStatus().equals(completeStatus))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TaskDTO> findAllTasksByStatus(Status completeStatus) {
+        return findAll().stream()
+                .filter(task -> !task.getTaskStatus().equals(completeStatus))
                 .collect(Collectors.toList());
     }
 }
