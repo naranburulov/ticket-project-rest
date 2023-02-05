@@ -44,7 +44,7 @@ public class TaskServiceImpl extends AbstractMapService<TaskDTO, Long> implement
         TaskDTO foundTask = findById(task.getId());
         //this method is used in TaskController,
         // and it grabs the certain task from the UI form (see Task List on Task Create page)
-        // therefore, id, status, and assigned date - all already exist for that exact task
+        // therefore, id, status, and assigned date already exist for that exact task
 
         task.setTaskStatus(foundTask.getTaskStatus());
         task.setAssignedDate(foundTask.getAssignedDate());
@@ -76,5 +76,12 @@ public class TaskServiceImpl extends AbstractMapService<TaskDTO, Long> implement
         return findAll().stream()
                 .filter(task -> !task.getTaskStatus().equals(completeStatus))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateTaskStatus(TaskDTO task) {
+        findById(task.getId()).setTaskStatus(task.getTaskStatus());
+        //first, status is updated in the UI form (pending tasks - update task status)
+        update(task);   //then, task is updated with new status information by using update()
     }
 }
