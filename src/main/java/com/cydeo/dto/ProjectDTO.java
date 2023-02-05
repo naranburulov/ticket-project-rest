@@ -9,8 +9,8 @@ import java.time.LocalDate;
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProjectDTO {
 
     private String projectName;
@@ -24,6 +24,19 @@ public class ProjectDTO {
 
     private String projectDetail;
     private Status projectStatus;
+
+    public ProjectDTO(String projectName, String projectCode, UserDTO assignedManager, LocalDate startDate, LocalDate endDate, String projectDetail, Status projectStatus) {
+        this.projectName = projectName;
+        this.projectCode = projectCode;
+        this.assignedManager = assignedManager;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.projectDetail = projectDetail;
+        this.projectStatus = projectStatus;
+    }
+
+    private int completeTaskCounts;
+    private int unfinishedTaskCounts;
 
 
 }
