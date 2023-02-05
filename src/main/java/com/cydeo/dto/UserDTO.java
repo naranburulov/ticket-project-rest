@@ -125,4 +125,14 @@ public class UserDTO {
         this.gender = gender;
     }
 
+    public UserDTO(String firstName, String lastName, String userName, String passWord, boolean enabled, String phone, RoleDTO role, Gender gender) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.passWord = passWord;
+        this.enabled = enabled;
+        this.phone = phone;
+        this.role = role;
+        this.gender = gender;
+    }
 }
