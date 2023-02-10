@@ -22,7 +22,6 @@ public class User extends BaseEntity{
     private boolean enabled;                    //for security
     private String phone;
     @ManyToOne                                      //many users - one role
-    @JoinColumn(name = "role_id")
     private Role role;
     @Enumerated(EnumType.STRING)
     private Gender gender;
