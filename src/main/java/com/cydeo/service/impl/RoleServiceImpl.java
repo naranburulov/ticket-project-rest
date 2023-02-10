@@ -19,7 +19,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleDTO> listAllRoles() {
 
-        return ;
+        return null;
     }
 
     @Override
