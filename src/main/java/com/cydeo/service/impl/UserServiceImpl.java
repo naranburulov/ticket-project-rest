@@ -3,7 +3,6 @@ package com.cydeo.service.impl;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.MapperUtil;
-import com.cydeo.repo.RoleRepository;
 import com.cydeo.repo.UserRepository;
 import com.cydeo.service.UserService;
 import org.springframework.data.domain.Sort;
@@ -14,13 +13,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final MapperUtil mapperUtil;
 
-    public UserServiceImpl(RoleRepository roleRepository,
-                           UserRepository userRepository, MapperUtil mapperUtil) {
-        this.roleRepository = roleRepository;
+    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil) {
         this.userRepository = userRepository;
         this.mapperUtil = mapperUtil;
     }
@@ -43,7 +39,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteByUserName(String username) {
+    public void update(UserDTO userDTO) {
+        //find current user from the db by the username
+        User userDB = userRepository.findByUserName(userDTO.getUserName());
+        //map convert user dto to entity obj
+        User convertedUser = mapperUtil.convert(userDB,new User());
+        //set id to the converted obj
+        convertedUser.setId(userDB.getId());
+        //save the updated user to the db
+        userRepository.save(convertedUser);
+    }
 
+    @Override
+    public void deleteByUserName(String username) {
+        userRepository.deleteByUserName(username);
     }
 }
