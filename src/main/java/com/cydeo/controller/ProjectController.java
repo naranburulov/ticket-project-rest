@@ -6,6 +6,7 @@ import com.cydeo.service.ProjectService;
 import com.cydeo.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +30,17 @@ public class ProjectController {
         model.addAttribute("projects", projectService.listAllProject());
         return "project/create";
     }
-//
-//    @PostMapping("/create")
-//    public String insertProject(@ModelAttribute("project") ProjectDTO project){
-//        projectService.save(project);
-//        return "redirect:/project/create";
-//    }
+
+    @PostMapping("/create")
+    public String insertProject(@ModelAttribute("project") ProjectDTO project, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("managers", userService.listAllByRole("manager"));
+            model.addAttribute("projects", projectService.listAllProject());
+            return "/project/create";
+        }
+        projectService.save(project);
+        return "redirect:/project/create";
+    }
 
 //    @GetMapping("/complete/{projectCode}")
 //    public String completeProject(@PathVariable("projectCode") String projectCode){

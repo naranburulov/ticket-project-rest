@@ -5,6 +5,7 @@ import com.cydeo.entity.Project;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repo.ProjectRepository;
 import com.cydeo.service.ProjectService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectDTO> listAllProject() {
-        return projectRepository.findAll().stream()
+        return projectRepository.findAll(Sort.by("projectCode")).stream()
                 .map(project -> mapperUtil.convert(project, new ProjectDTO()))
                 .collect(Collectors.toList());
     }
