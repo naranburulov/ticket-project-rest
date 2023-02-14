@@ -8,7 +8,7 @@ public interface ProjectService {
 
     List<ProjectDTO> listAllProject();
     ProjectDTO findByProjectCode(String projectCode);
-    void save(ProjectDTO project);
-    void update(ProjectDTO project);
+    void save(ProjectDTO projectDTO);
+    void update(ProjectDTO projectDTO);
     void delete(String projectCode);
 }
