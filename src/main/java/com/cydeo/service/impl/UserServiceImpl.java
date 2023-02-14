@@ -53,5 +53,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteByUserName(String username) {
         userRepository.deleteByUserName(username);
+    }   //can't use this method, for it permanently deletes user from DB
+
+
+    //just change the BaseEntity's field isDeleted to true, and save the user
+    @Override
+    public void delete(String username) {
+        User user = userRepository.findByUserName(username);
+        user.setIsDeleted(true);
+        userRepository.save(user);
     }
 }
