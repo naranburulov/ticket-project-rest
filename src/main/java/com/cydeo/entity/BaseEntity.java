@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-@Where(clause = "is_deleted=false")
 public class BaseEntity {
 
     @Id
