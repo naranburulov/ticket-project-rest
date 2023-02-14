@@ -1,6 +1,7 @@
 package com.cydeo.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
+@Where(clause = "is_deleted=false")
 public class BaseEntity {
 
     @Id
