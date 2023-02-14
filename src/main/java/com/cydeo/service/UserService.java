@@ -1,5 +1,6 @@
 package com.cydeo.service;
 
+import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.UserDTO;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface UserService {
     UserDTO update(UserDTO userDTO);
     void deleteByUserName(String username);
     void delete(String username);
+
+    List<UserDTO>listAllByRole(String role);
 }
