@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "projects")
 @Where(clause = "is_deleted=false")      //any query which uses Project entity will include is_deleted=false to consideration
 public class Project extends BaseEntity{
 
