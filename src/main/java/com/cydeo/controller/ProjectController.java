@@ -72,15 +72,13 @@ public class ProjectController {
         projectService.delete(projectCode);
         return "redirect:/project/create";
     }
-//
-//
-//    @GetMapping("/manager/project-status")
-//    public String getProjectByManager(Model model){
-//        UserDTO manager = userService.findById("john@cydeo.com");   //temporary hard-coded (will change after security)
-//        List<ProjectDTO> projects = projectService.getCountedListOfProjects(manager);
-//
-//        model.addAttribute("projects", projects);
-//        return "/manager/project-status";
-//    }
+
+
+    @GetMapping("/manager/project-status")
+    public String getProjectByManager(Model model){
+        List<ProjectDTO> projects = projectService.listAllProjectDetails();
+        model.addAttribute("projects", projects);
+        return "/manager/project-status";
+    }
 
 }

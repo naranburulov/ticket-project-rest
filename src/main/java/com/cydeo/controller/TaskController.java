@@ -46,8 +46,8 @@ public class TaskController {
         return "redirect:/task/create";
     }
 
-    @GetMapping("/update/{id}")
-    public String editTask(@PathVariable("id") Long taskId, Model model){
+    @GetMapping("/update/{taskId}")
+    public String editTask(@PathVariable("taskId") Long taskId, Model model){
         model.addAttribute("task", taskService.findById(taskId));
         model.addAttribute("projects", projectService.listAllProject());
         model.addAttribute("employees", userService.listAllByRole("employee"));
