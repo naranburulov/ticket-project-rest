@@ -2,12 +2,14 @@ package com.cydeo.service.impl;
 
 import com.cydeo.dto.TaskDTO;
 import com.cydeo.entity.Task;
+import com.cydeo.enums.Status;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repo.TaskRepository;
 import com.cydeo.service.TaskService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +26,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDTO> listAllTasks() {
-        return taskRepository.findAll(Sort.by("taskStatus")).stream()
+        return taskRepository.findAll(Sort.by("assignedEmployee")).stream()
                 .map(task -> mapperUtil.convert(task, new TaskDTO()))
                 .collect(Collectors.toList());
     }
@@ -36,7 +38,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void save(TaskDTO taskDTO) {
-        taskDTO.setTaskStatus(taskDTO.getTaskStatus());
+        taskDTO.setTaskStatus(Status.OPEN);
+        taskDTO.setAssignedDate(LocalDate.now());
         Task task = mapperUtil.convert(taskDTO, new Task());
         taskRepository.save(task);
     }

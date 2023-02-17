@@ -6,7 +6,10 @@ import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/task")
@@ -32,7 +35,13 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String insertTask(TaskDTO task){
+    public String insertTask( @ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("projects", projectService.listAllProject());
+            model.addAttribute("employees", userService.listAllByRole("employee"));
+            model.addAttribute("tasks", taskService.listAllTasks());
+            return "/task/create";
+        }
         taskService.save(task);
         return "redirect:/task/create";
     }
