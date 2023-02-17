@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> listAllByRole(String role) {
-        return userRepository.findAllByRoleDescriptionAndEnabledIgnoreCase(role).stream()
+        return userRepository.findByRoleDescriptionIgnoreCase(role).stream()
                 .map(user -> mapperUtil.convert(user, new UserDTO()))
                 .collect(Collectors.toList());
     }
