@@ -8,6 +8,7 @@ import com.cydeo.enums.Status;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repo.ProjectRepository;
 import com.cydeo.service.ProjectService;
+import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,13 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final MapperUtil mapperUtil;
     private final UserService userService;
+    private final TaskService taskService;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, MapperUtil mapperUtil, UserService userService) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, MapperUtil mapperUtil, UserService userService, TaskService taskService) {
         this.projectRepository = projectRepository;
         this.mapperUtil = mapperUtil;
         this.userService = userService;
+        this.taskService = taskService;
     }
 
     @Override
@@ -75,10 +78,10 @@ public class ProjectServiceImpl implements ProjectService {
         UserDTO currentUserDto = userService.findByUserName("harold@manager.com");
         User user = mapperUtil.convert(currentUserDto, new User());
         return projectRepository.findProjectsByAssignedManager(user).stream()
-                .map(projectDTO -> {
-                    ProjectDTO dto = mapperUtil.convert(projectDTO, new ProjectDTO());
-                    dto.setUnfinishedTaskCounts(3);
-                    dto.setCompleteTaskCounts(5);
+                .map(project -> {
+                    ProjectDTO dto = mapperUtil.convert(project, new ProjectDTO());
+                    dto.setUnfinishedTaskCounts(taskService.totalNonCompletedTasks(project.getProjectCode()));
+                    dto.setCompleteTaskCounts(taskService.totalCompletedTasks(project.getProjectCode()));
                     return dto;
                 })
                 .collect(Collectors.toList());
