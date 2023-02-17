@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @Where(clause = "is_deleted=false")      //any query which uses Project entity will include is_deleted=false to consideration
 public class Project extends BaseEntity{
 
+    @Column(unique = true)
     private String projectCode;
     private String projectName;
 
