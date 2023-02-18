@@ -2,12 +2,15 @@ package com.cydeo.service.impl;
 
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.TaskDTO;
+import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.Project;
 import com.cydeo.entity.Task;
+import com.cydeo.entity.User;
 import com.cydeo.enums.Status;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repo.TaskRepository;
 import com.cydeo.service.TaskService;
+import com.cydeo.service.UserService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +24,12 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final MapperUtil mapperUtil;
+    private final UserService userService;
 
-    public TaskServiceImpl(TaskRepository taskRepository, MapperUtil mapperUtil) {
+    public TaskServiceImpl(TaskRepository taskRepository, MapperUtil mapperUtil, UserService userService) {
         this.taskRepository = taskRepository;
         this.mapperUtil = mapperUtil;
+        this.userService = userService;
     }
 
     @Override
@@ -94,5 +99,25 @@ public class TaskServiceImpl implements TaskService {
                 taskDTO.setTaskStatus(Status.COMPLETE);
                 update(taskDTO);
         });
+    }
+
+    @Override
+    public List<TaskDTO> listAllTasksByStatusIsNot(Status status) {
+        UserDTO loggedInUser = userService.findByUserName("john@employee.com");
+        List<Task> tasks = taskRepository.findAllByTaskStatusIsNotAndAssignedEmployee(status,
+                mapperUtil.convert(loggedInUser, new User()));
+        return tasks.stream()
+                .map(task -> mapperUtil.convert(task, new TaskDTO()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TaskDTO> listAllTasksByStatus(Status status) {
+        UserDTO loggedInUser = userService.findByUserName("john@employee.com");
+        List<Task> tasks = taskRepository.findAllByTaskStatusAndAssignedEmployee(status,
+                mapperUtil.convert(loggedInUser, new User()));
+        return tasks.stream()
+                .map(task -> mapperUtil.convert(task, new TaskDTO()))
+                .collect(Collectors.toList());
     }
 }
