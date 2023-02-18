@@ -3,6 +3,7 @@ package com.cydeo.service.impl;
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.Project;
+import com.cydeo.entity.Task;
 import com.cydeo.entity.User;
 import com.cydeo.enums.Status;
 import com.cydeo.mapper.MapperUtil;
@@ -78,6 +79,7 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = projectRepository.findByProjectCode(projectCode);
         project.setProjectStatus(Status.COMPLETE);
         projectRepository.save(project);
+        taskService.completeByProject(mapperUtil.convert(project, new ProjectDTO()));
     }
 
     @Override
