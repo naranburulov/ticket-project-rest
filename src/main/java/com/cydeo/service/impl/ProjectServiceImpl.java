@@ -63,7 +63,14 @@ public class ProjectServiceImpl implements ProjectService {
     public void delete(String projectCode) {
         Project project = projectRepository.findByProjectCode(projectCode);
         project.setIsDeleted(true);
+        // if project is deleted, change the project code,
+        // so that later that code could be used for other new projects. Ex: "SP01"
+        project.setProjectCode(project.getProjectCode() + "-" + project.getId());
+        //.. becomes "SP01-1" (it doesn't have to be + project.getId(), it's just have to be smth unique)
+
         projectRepository.save(project);
+
+        taskService.deleteByProject(mapperUtil.convert(project, new ProjectDTO()));
     }
 
     @Override
