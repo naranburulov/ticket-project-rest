@@ -5,6 +5,7 @@ import com.cydeo.enums.Status;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -89,23 +90,28 @@ public class TaskController {
         return "/task/archive";
     }
 
-//    //update Pending Tasks from inProgress to Complete:
-//    @GetMapping("/employee/edit/{id}")
-//    public String employeeEditTask(@PathVariable("id") Long id, Model model){
-//        model.addAttribute("task", taskService.findById(id));
-//        model.addAttribute("statuses", Status.values());
-//        model.addAttribute("tasks", taskService.findAllTasksByStatusIsNot(Status.COMPLETE));
-//        return "/task/status-update";
-//    }
-//
-//    @PostMapping("/employee/update/{id}")
-//    public String employeeUpdateTask(TaskDTO task){
-//        taskService.updateTaskStatus(task);
-//        return "redirect:/task/employee/pending-tasks";
-//    }
-//
-//
-//
+    //update Pending Tasks from inProgress to Complete:
+    @GetMapping("/employee/edit/{id}")
+    public String employeeEditTask(@PathVariable("id") Long id, Model model){
+        model.addAttribute("task", taskService.findById(id));
+        model.addAttribute("statuses", Status.values());
+        model.addAttribute("tasks", taskService.listAllTasksByStatusIsNot(Status.COMPLETE));
+        return "/task/status-update";
+    }
+
+    @PostMapping("/employee/update/{id}")
+    public String employeeUpdateTask(@Valid @ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("statuses", Status.values());
+            model.addAttribute("tasks", taskService.listAllTasksByStatusIsNot(Status.COMPLETE));
+            return "/task/status-update";
+        }
+        taskService.update(task);
+        return "redirect:/task/employee/pending-tasks";
+    }
+
+
+
 
 
 }
