@@ -36,7 +36,7 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String insertTask( @ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model){
+    public String insertTask(@Valid @ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
             model.addAttribute("projects", projectService.listAllProject());
             model.addAttribute("employees", userService.listAllByRole("employee"));
@@ -57,7 +57,7 @@ public class TaskController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateTask(@ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model){
+    public String updateTask(@Valid @ModelAttribute("task") TaskDTO task, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
             model.addAttribute("projects", projectService.listAllProject());
             model.addAttribute("employees", userService.listAllByRole("employee"));
