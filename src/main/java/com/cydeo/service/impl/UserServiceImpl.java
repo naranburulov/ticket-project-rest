@@ -1,9 +1,13 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.ProjectDTO;
+import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.User;
 import com.cydeo.mapper.MapperUtil;
 import com.cydeo.repo.UserRepository;
+import com.cydeo.service.ProjectService;
+import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -15,10 +19,14 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final MapperUtil mapperUtil;
+    private final ProjectService projectService;
+    private final TaskService taskService;
 
-    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil) {
+    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, ProjectService projectService, TaskService taskService) {
         this.userRepository = userRepository;
         this.mapperUtil = mapperUtil;
+        this.projectService = projectService;
+        this.taskService = taskService;
     }
 
     @Override
@@ -64,8 +72,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String username) {
         User user = userRepository.findByUserName(username);
-        user.setIsDeleted(true);
-        userRepository.save(user);
+        if (checkIfUserCanBeDeleted(user)){
+            user.setIsDeleted(true);
+            userRepository.save(user);
+        }
+
+
+    }
+
+    private boolean checkIfUserCanBeDeleted(User user){
+        switch (user.getRole().getDescription()){
+            case "Manager":
+                List<ProjectDTO> projectDTOList = projectService.listAllNonCompletedByAssignedManager(mapperUtil.convert(user, new UserDTO()));
+                return projectDTOList.size() == 0;
+            case "Employee":
+                List<TaskDTO> taskDTOList = taskService.listAllNonCompletedByAssignedEmployee(mapperUtil.convert(user, new UserDTO()));
+                return taskDTOList.size() == 0;
+            default:
+                return true;
+        }
     }
 
     @Override
@@ -74,4 +99,5 @@ public class UserServiceImpl implements UserService {
                 .map(user -> mapperUtil.convert(user, new UserDTO()))
                 .collect(Collectors.toList());
     }
+
 }
