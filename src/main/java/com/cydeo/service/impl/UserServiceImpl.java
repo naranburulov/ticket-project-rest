@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findByUserName(String username) {
-        return mapperUtil.convert(userRepository.findByUserName(username), new UserDTO());
+        return mapperUtil.convert(userRepository.findByUserNameAndIsDeleted(username, false), new UserDTO());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO update(UserDTO user) {
 
         //Find current user
-        User user1 = userRepository.findByUserName(user.getUserName());  //has id
+        User user1 = userRepository.findByUserNameAndIsDeleted(user.getUserName(), false);  //has id
         //Map update user dto to entity object
         User convertedUser = mapperUtil.convert(user, new User());   // has id?
         //set id to the converted object
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     //just change the BaseEntity's field isDeleted to true, and save the user
     @Override
     public void delete(String username) {
-        User user = userRepository.findByUserName(username);
+        User user = userRepository.findByUserNameAndIsDeleted(username, false);
         if (checkIfUserCanBeDeleted(user)){
             user.setIsDeleted(true);
             user.setUserName(user.getUserName() + "-" + user.getId());          //harold@manager-2
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> listAllByRole(String role) {
-        return userRepository.findByRoleDescriptionIgnoreCase(role).stream()
+        return userRepository.findByRoleDescriptionIgnoreCaseAAndIsDeleted(role, false).stream()
                 .map(user -> mapperUtil.convert(user, new UserDTO()))
                 .collect(Collectors.toList());
     }

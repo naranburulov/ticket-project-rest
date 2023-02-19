@@ -9,12 +9,10 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-    User findByUserName(String username);
 
-    @Transactional
-    void deleteByUserName(String username);
-
-    List<User> findByRoleDescriptionIgnoreCase(String roleDescription);
+    List<User> findAllByIsDeletedOrderByFirstNameDesc(Boolean deleted);
+    User findByUserNameAndIsDeleted(String username, Boolean deleted);
+    List<User> findByRoleDescriptionIgnoreCaseAAndIsDeleted(String roleDescription, Boolean deleted);
 
 
 }

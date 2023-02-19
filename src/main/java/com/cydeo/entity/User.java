@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-@Where(clause = "is_deleted=false") //any query which uses User entity will include is_deleted=false to consideration
+//@Where(clause = "is_deleted=false")
 public class User extends BaseEntity{
 
     private String firstName;
