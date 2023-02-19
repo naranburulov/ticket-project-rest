@@ -9,6 +9,7 @@ import com.cydeo.repo.UserRepository;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private final ProjectService projectService;
     private final TaskService taskService;
 
-    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, ProjectService projectService, TaskService taskService) {
+    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy ProjectService projectService, @Lazy TaskService taskService) {
         this.userRepository = userRepository;
         this.mapperUtil = mapperUtil;
         this.projectService = projectService;
@@ -62,11 +63,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public void deleteByUserName(String username) {
-        userRepository.deleteByUserName(username);
-    }   //can't use this method, for it permanently deletes user from DB
-
 
     //just change the BaseEntity's field isDeleted to true, and save the user
     @Override
@@ -74,10 +70,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserName(username);
         if (checkIfUserCanBeDeleted(user)){
             user.setIsDeleted(true);
+            user.setUserName(user.getUserName() + "-" + user.getId());          //harold@manager-2
             userRepository.save(user);
         }
-
-
     }
 
     private boolean checkIfUserCanBeDeleted(User user){
