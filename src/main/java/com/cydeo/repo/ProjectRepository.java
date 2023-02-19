@@ -1,6 +1,5 @@
 package com.cydeo.repo;
 
-import com.cydeo.dto.ProjectDTO;
 import com.cydeo.entity.Project;
 import com.cydeo.entity.User;
 import com.cydeo.enums.Status;
@@ -13,6 +12,6 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Project findByProjectCode(String projectCode);
 
-    List<ProjectDTO> findAllByAssignedManager(User manager);
+    List<Project> findAllByAssignedManager(User manager);
     List<Project> findAllByProjectStatusIsNotAndAssignedManager(Status status, User assignedManager);
 }
