@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findAllByIsDeletedOrderByFirstNameDesc(Boolean deleted);
     User findByUserNameAndIsDeleted(String username, Boolean deleted);
-    List<User> findByRoleDescriptionIgnoreCaseAAndIsDeleted(String roleDescription, Boolean deleted);
+    List<User> findByRoleDescriptionIgnoreCaseAndIsDeleted(String roleDescription, Boolean deleted);
 
 
 }

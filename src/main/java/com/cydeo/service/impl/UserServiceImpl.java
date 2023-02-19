@@ -10,7 +10,6 @@ import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> listAllUsers() {
-        return userRepository.findAll(Sort.by("firstName")).stream()
+        return userRepository.findAllByIsDeletedOrderByFirstNameDesc(false).stream()
                 .map(user -> mapperUtil.convert(user, new UserDTO()))
                 .collect(Collectors.toList());
     }
@@ -90,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> listAllByRole(String role) {
-        return userRepository.findByRoleDescriptionIgnoreCaseAAndIsDeleted(role, false).stream()
+        return userRepository.findByRoleDescriptionIgnoreCaseAndIsDeleted(role, false).stream()
                 .map(user -> mapperUtil.convert(user, new UserDTO()))
                 .collect(Collectors.toList());
     }
