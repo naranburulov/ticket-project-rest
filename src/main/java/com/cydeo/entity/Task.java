@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "tasks")
 @Where(clause = "is_deleted=false")

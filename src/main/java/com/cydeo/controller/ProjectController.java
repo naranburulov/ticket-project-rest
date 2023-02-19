@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/project")
@@ -60,6 +61,7 @@ public class ProjectController {
         if (bindingResult.hasErrors()){
             model.addAttribute("managers", userService.listAllByRole("manager"));
             model.addAttribute("projects", projectService.listAllProject());
+            return "/project/update";
         }
         projectService.update(project);
         return "redirect:/project/create";
@@ -71,10 +73,10 @@ public class ProjectController {
         return "redirect:/project/create";
     }
 
-
     @GetMapping("/manager/project-status")
-    public String getProjectByManager(Model model){
-        model.addAttribute("projects", projectService.listAllProjectDetails());
+    public String getProjectByManager(Model model) {
+        List<ProjectDTO> projects = projectService.listAllProjectDetails();
+        model.addAttribute("projects", projects);
         return "/manager/project-status";
     }
 

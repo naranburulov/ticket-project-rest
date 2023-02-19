@@ -3,7 +3,6 @@ package com.cydeo.service.impl;
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.Project;
-import com.cydeo.entity.Task;
 import com.cydeo.entity.User;
 import com.cydeo.enums.Status;
 import com.cydeo.mapper.MapperUtil;
@@ -40,8 +39,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectDTO findByProjectCode(String projectCode) {
-        return mapperUtil.convert(projectRepository.findByProjectCode(projectCode), new ProjectDTO());
+    public ProjectDTO findByProjectCode(String code) {
+        Project project = projectRepository.findByProjectCode(code);
+        return mapperUtil.convert(project, new ProjectDTO());
     }
 
     @Override
@@ -86,13 +86,18 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectDTO> listAllProjectDetails() {
         UserDTO currentUserDto = userService.findByUserName("harold@manager.com");
         User user = mapperUtil.convert(currentUserDto, new User());
-        return projectRepository.findProjectsByAssignedManager(user).stream()
-                .map(project -> {
-                    ProjectDTO dto = mapperUtil.convert(project, new ProjectDTO());
-                    dto.setUnfinishedTaskCounts(taskService.totalNonCompletedTasks(project.getProjectCode()));
-                    dto.setCompleteTaskCounts(taskService.totalCompletedTasks(project.getProjectCode()));
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        return projectRepository.findAllByAssignedManager(user).stream().map(project -> {
+                         ProjectDTO dto = mapperUtil.convert(project, new ProjectDTO());
+                         dto.setUnfinishedTaskCounts(taskService.totalNonCompletedTasks(project.getProjectCode()));
+                         dto.setCompleteTaskCounts(taskService.totalCompletedTasks(project.getProjectCode()));
+                         return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProjectDTO> listAllNonCompletedByAssignedManager(UserDTO assignedManager) {
+        List<Project> projects = projectRepository
+                .findAllByProjectStatusIsNotAndAssignedManager(Status.COMPLETE, mapperUtil.convert(assignedManager, new User()));
+        return projects.stream().map(project -> mapperUtil.convert(project, new ProjectDTO())).collect(Collectors.toList());
     }
 }
