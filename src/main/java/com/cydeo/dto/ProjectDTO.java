@@ -1,7 +1,9 @@
 package com.cydeo.dto;
 
 import com.cydeo.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import net.bytebuddy.asm.Advice;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -46,7 +48,9 @@ public class ProjectDTO {
         this.projectStatus = projectStatus;
     }
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int completeTaskCounts;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int unfinishedTaskCounts;
 
 

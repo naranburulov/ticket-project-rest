@@ -37,11 +37,11 @@ public class UserDTO {
 
     @NotBlank
     @Pattern(regexp = "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{4,}")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String passWord;
 
     @NotNull
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String confirmPassWord;
 
     private boolean enabled;
