@@ -10,7 +10,10 @@ import com.cydeo.repo.ProjectRepository;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
+import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -84,7 +87,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectDTO> listAllProjectDetails() {
-        UserDTO currentUserDto = userService.findByUserName("harold@manager.com");
+
+        //getting username by the token; for all authorization is implemented by OAuth2:
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
+        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
+
+        UserDTO currentUserDto = userService.findByUserName(username);
         User user = mapperUtil.convert(currentUserDto, new User());
         return projectRepository.findAllByAssignedManager(user).stream().map(project -> {
                          ProjectDTO dto = mapperUtil.convert(project, new ProjectDTO());
