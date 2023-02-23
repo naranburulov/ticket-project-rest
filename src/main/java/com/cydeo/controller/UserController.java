@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
-@Tag(name = "UserController", description = "User API")         //for Swagger
+@Tag(name = "User Controller", description = "User API")         //for Swagger
 public class UserController{
 
     private final UserService userService;
