@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 @Setter
 public class KeycloakProperties {
 
-    // purpose of this class to bring configurations from application.properties
-    // and to be able to use these fields anywhere when needed
+    // purpose of this class
+    // to be able to use those fields from application properties anywhere as the java code, when needed
 
     @Value("${keycloak.realm}")
     private String realm;
