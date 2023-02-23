@@ -18,6 +18,8 @@ import java.util.Optional;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    // whenever exception happens, this class will be executed
+    // for example, the output message will be shorter  in the swagger (and not that "ugly")
 
     @ExceptionHandler(TicketingProjectException.class)
     public ResponseEntity<ResponseWrapper> serviceException(TicketingProjectException se){
@@ -31,11 +33,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ResponseWrapper.builder().success(false).code(HttpStatus.FORBIDDEN.value()).message(message).build(),HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler({Exception    .class, RuntimeException.class, Throwable.class, BadCredentialsException.class})
+    @ExceptionHandler({Exception.class, RuntimeException.class, Throwable.class, BadCredentialsException.class})
     public ResponseEntity<ResponseWrapper> genericException(Throwable e, HandlerMethod handlerMethod) {
 
         Optional<DefaultExceptionMessageDto> defaultMessage = getMessageFromAnnotation(handlerMethod.getMethod());
-        if (defaultMessage.isPresent() && !ObjectUtils.isEmpty(defaultMessage.get().getMessage())) {
+        if (defaultMessage.isPresent() && !ObjectUtils.isEmpty(defaultMessage.get().getMessage())) {    //@DefaultExceptionMessage
             ResponseWrapper response = ResponseWrapper
                     .builder()
                     .success(false)
