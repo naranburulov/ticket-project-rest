@@ -22,7 +22,7 @@ import static org.keycloak.admin.client.CreatedResponseUtil.getCreatedId;
 public class KeycloakServiceImpl implements KeycloakService {
 
 
-    private final KeycloakProperties keycloakProperties;
+    private final KeycloakProperties keycloakProperties;            // from -> config
 
     public KeycloakServiceImpl(KeycloakProperties keycloakProperties) {
 
@@ -30,26 +30,29 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     @Override
-    public Response userCreate(UserDTO userDTO) {
+    public Response userCreate(UserDTO userDTO) {       //Response - coming from ->  javax.ws.rs.core   dependency
 
-        CredentialRepresentation credential = new CredentialRepresentation();
+        // set all the fields to the Keycloak user,
+        // those fields are received from the userDTO, which will be passed in API (body)
+
+        CredentialRepresentation credential = new CredentialRepresentation();       //CredRep -> org.keycloak
         credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setTemporary(false);
+        credential.setTemporary(false);                             //if true, will have to reset password each time
         credential.setValue(userDTO.getPassWord());
 
-        UserRepresentation keycloakUser = new UserRepresentation();
+        UserRepresentation keycloakUser = new UserRepresentation();         //UserRep -> org.keycloak
         keycloakUser.setUsername(userDTO.getUserName());
         keycloakUser.setFirstName(userDTO.getFirstName());
         keycloakUser.setLastName(userDTO.getLastName());
         keycloakUser.setEmail(userDTO.getUserName());
-        keycloakUser.setCredentials(asList(credential));
+        keycloakUser.setCredentials(asList(credential));        //setting the credentials captured above
         keycloakUser.setEmailVerified(true);
         keycloakUser.setEnabled(true);
 
 
-        Keycloak keycloak = getKeycloakInstance();
+        Keycloak keycloak = getKeycloakInstance();      //private static method
 
-        RealmResource realmResource = keycloak.realm(keycloakProperties.getRealm());
+        RealmResource realmResource = keycloak.realm(keycloakProperties.getRealm());    //cydeo-dev - realm from keycloak
         UsersResource usersResource = realmResource.users();
 
         // Create Keycloak user
@@ -59,8 +62,8 @@ public class KeycloakServiceImpl implements KeycloakService {
         ClientRepresentation appClient = realmResource.clients()
                 .findByClientId(keycloakProperties.getClientId()).get(0);
 
-        RoleRepresentation userClientRole = realmResource.clients().get(appClient.getId()) //
-                .roles().get(userDTO.getRole().getDescription()).toRepresentation();
+        RoleRepresentation userClientRole = realmResource.clients().get(appClient.getId())
+                .roles().get(userDTO.getRole().getDescription()).toRepresentation();            //client roles from keycloak
 
         realmResource.users().get(userId).roles().clientLevel(appClient.getId())
                 .add(List.of(userClientRole));
@@ -80,7 +83,7 @@ public class KeycloakServiceImpl implements KeycloakService {
 
         List<UserRepresentation> userRepresentations = usersResource.search(userName);
         String uid = userRepresentations.get(0).getId();
-        usersResource.delete(uid);
+        usersResource.delete(uid);                              //deleting user by the unique ID in keycloak
 
         keycloak.close();
     }
