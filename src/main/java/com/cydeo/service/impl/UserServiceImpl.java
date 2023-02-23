@@ -1,5 +1,6 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.annotation.DefaultExceptionMessage;
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
@@ -71,6 +72,7 @@ public class UserServiceImpl implements UserService {
 
     //just change the BaseEntity's field isDeleted to true, and save the user
     @Override
+    @DefaultExceptionMessage(defaultMessage = "Failed to delete user")  //custom annotation - see annotation package
     public void delete(String username) throws TicketingProjectException {
         User user = userRepository.findByUserNameAndIsDeleted(username, false);
         if (checkIfUserCanBeDeleted(user)){
