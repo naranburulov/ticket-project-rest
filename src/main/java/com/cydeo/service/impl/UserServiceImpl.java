@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +44,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findByUserName(String username) {
-        return mapperUtil.convert(userRepository.findByUserNameAndIsDeleted(username, false), new UserDTO());
+        User user = userRepository.findByUserNameAndIsDeleted(username, false);
+        if (user == null) throw new NoSuchElementException("User not found");
+        return mapperUtil.convert(user, new UserDTO());
     }
 
     @Override
