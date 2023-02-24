@@ -47,10 +47,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(UserDTO userDTO) {
+    public UserDTO save(UserDTO userDTO) {
         userDTO.setEnabled(true);
-        userRepository.save(mapperUtil.convert(userDTO, new User()));
+        User savedUser = userRepository.save(mapperUtil.convert(userDTO, new User()));
         keycloakService.userCreate(userDTO);
+        return mapperUtil.convert(savedUser, new UserDTO());
     }
 
     @Override

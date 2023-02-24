@@ -8,8 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ticket-project-db" />
-        <module name="ticketing-project-mvc" />
         <module name="ticket-project-rest" />
+        <module name="ticket-project-testing" />
+        <module name="ticketing-project-mvc" />
       </profile>
     </annotationProcessing>
   </component>
@@ -17,6 +18,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ticket-project-db" options="-parameters" />
       <module name="ticket-project-rest" options="-parameters" />
+      <module name="ticket-project-testing" options="-parameters" />
       <module name="ticketing-project-mvc" options="-parameters" />
     </option>
   </component>
