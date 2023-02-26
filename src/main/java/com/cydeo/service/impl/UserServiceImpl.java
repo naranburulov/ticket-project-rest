@@ -13,6 +13,7 @@ import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +27,15 @@ public class UserServiceImpl implements UserService {
     private final ProjectService projectService;
     private final TaskService taskService;
     private final KeycloakService keycloakService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy ProjectService projectService, @Lazy TaskService taskService, KeycloakService keycloakService) {
+    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy ProjectService projectService, @Lazy TaskService taskService, KeycloakService keycloakService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapperUtil = mapperUtil;
         this.projectService = projectService;
         this.taskService = taskService;
         this.keycloakService = keycloakService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -52,6 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO save(UserDTO userDTO) {
         userDTO.setEnabled(true);
+        userDTO.setPassWord(passwordEncoder.encode(userDTO.getPassWord()));
         User savedUser = userRepository.save(mapperUtil.convert(userDTO, new User()));
         keycloakService.userCreate(userDTO);
         return mapperUtil.convert(savedUser, new UserDTO());
@@ -62,6 +66,8 @@ public class UserServiceImpl implements UserService {
 
         //Find current user
         User user1 = userRepository.findByUserNameAndIsDeleted(user.getUserName(), false);  //has id
+        //encode password:
+        user.setPassWord(passwordEncoder.encode(user.getPassWord()));
         //Map update user dto to entity object
         User convertedUser = mapperUtil.convert(user, new User());   // has id?
         //set id to the converted object

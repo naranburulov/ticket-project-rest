@@ -1,6 +1,8 @@
 package com.cydeo.unitTest;
 
+import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.RoleDTO;
+import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.Role;
 import com.cydeo.entity.User;
@@ -18,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,12 +35,18 @@ public class UserServiceUnitTest {
 
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private ProjectService projectService;
+
     @Mock
     private TaskService taskService;
+
     @Mock
     private KeycloakService keycloakService;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -48,9 +57,9 @@ public class UserServiceUnitTest {
     User user;
     UserDTO userDTO;
 
-
     @BeforeEach
-    void setUp(){
+    void setUp() {
+
         user = new User();
         user.setId(1L);
         user.setFirstName("John");
@@ -67,19 +76,22 @@ public class UserServiceUnitTest {
         userDTO.setUserName("user");
         userDTO.setPassWord("Abc1");
         userDTO.setEnabled(true);
-            RoleDTO roleDTO = new RoleDTO();
+
+        RoleDTO roleDTO = new RoleDTO();
         roleDTO.setDescription("Manager");
+
+        userDTO.setRole(roleDTO);
 
     }
 
-    private List<User> getUsers(){
+    private List<User> getUsers() {
         User user2 = new User();
         user2.setId(2L);
         user2.setFirstName("Emily");
         return List.of(user, user2);
     }
 
-    private List<UserDTO> getUserDTOs(){
+    private List<UserDTO> getUserDTOs() {
         UserDTO userDTO2 = new UserDTO();
         userDTO2.setId(2L);
         userDTO2.setFirstName("Emily");
@@ -87,42 +99,76 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    void shouldListAllUsers(){
+    void should_list_all_users() {
+
         //stub
         when(userRepository.findAllByIsDeletedOrderByFirstNameDesc(false)).thenReturn(getUsers());
+
         List<UserDTO> expectedList = getUserDTOs();
+//        expectedList.sort(Comparator.comparing(UserDTO::getFirstName).reversed());
 
         List<UserDTO> actualList = userService.listAllUsers();
 
-//        assertEquals(expectedList,actualList);
-// can't compare objects' data of two list w/ assertEquals(),
-// for the objects are different, even though the data of the objects is the same
+//        assertEquals(expectedList, actualList);
 
-        //AssertJ
-        assertThat(actualList).usingRecursiveComparison()    //usingRecursiveComparison() - compares fields of the objs
-                .ignoringExpectedNullFields().isEqualTo(expectedList);
+        // AssertJ
+        assertThat(actualList).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedList);
+
     }
 
     @Test
-    void shouldFindUserByUserName(){
-        //stub
+    void should_find_user_by_username() {
+
         when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(user);
 
-        //return obj
         UserDTO actual = userService.findByUserName("user");
 
-        //expected
         assertThat(actual).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(userDTO);
+
     }
 
     @Test
-    void shouldThrowExceptionWhenUserNotFound(){
-        //when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(null);
+    void should_throw_exception_when_user_not_found() {
 
-        Throwable throwable = catchThrowable(() -> userService.findByUserName("SomeUserName"));
+        Throwable throwable = catchThrowable(() -> userService.findByUserName("SomeUsername"));
 
-        assertInstanceOf(NoSuchElementException.class,throwable);
+        assertInstanceOf(NoSuchElementException.class, throwable);
         assertEquals("User not found", throwable.getMessage());
+
+//        assertThrows(NoSuchElementException.class, () -> userService.findByUserName("SomeUsername"));
+//        assertEquals("User not found", throwable.getMessage());
+//
+//        assertThrowsExactly(NoSuchElementException.class, () -> userService.findByUserName("SomeUsername"));
+//        assertEquals("User not found", throwable.getMessage());
+
+    }
+
+    @Test
+    void should_save_user() {
+
+        when(userRepository.save(any())).thenReturn(user);
+
+        UserDTO actualDTO = userService.save(userDTO);
+
+        assertThat(actualDTO).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(userDTO);
+
+        verify(passwordEncoder).encode(anyString());
+
+    }
+
+    @Test
+    void should_update_user() {
+
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(user);
+
+        when(userRepository.save(any())).thenReturn(user);
+
+        UserDTO actualDTO = userService.update(userDTO);
+
+        verify(passwordEncoder).encode(anyString());
+
+        assertThat(actualDTO).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(userDTO);
+
     }
 
 }
