@@ -191,6 +191,41 @@ public class UserServiceUnitTest {
 
     }
 
+    @Test
+    void should_throw_exception_when_delete_manager() throws TicketingProjectException {
+
+        User managerUser = getUser("Manager");
+
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(managerUser);
+
+        when(projectService.listAllNonCompletedByAssignedManager(any())).thenReturn(List.of(new ProjectDTO(), new ProjectDTO()));
+
+        Throwable throwable = catchThrowable(() -> userService.delete(userDTO.getUserName()));
+
+        assertInstanceOf(TicketingProjectException.class, throwable);
+        assertEquals("User can not be deleted", throwable.getMessage());
+
+
+
+    }
+
+    @Test
+    void should_throw_exception_when_delete_employee() throws TicketingProjectException {
+
+        User employeeUser = getUser("Employee");
+
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(employeeUser);
+
+        when(taskService.listAllNonCompletedByAssignedEmployee(any())).thenReturn(List.of(new TaskDTO(), new TaskDTO()));
+
+        Throwable throwable = catchThrowable(() -> userService.delete(userDTO.getUserName()));
+
+        assertInstanceOf(TicketingProjectException.class, throwable);
+        assertEquals("User can not be deleted", throwable.getMessage());
+
+
+
+    }
 
 
     private User getUser(String role) {
